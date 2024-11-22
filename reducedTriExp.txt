@@ -1,0 +1,17 @@
+reduced TriExp model (5 parameters)
+
+S/S0 = (1-a-b)*EXP(-c*x)+a*EXP(-d*x)+b*EXP(-e*x)
+
+(%i1)	diff((1-a-b)*EXP(-c*x)+a*EXP(-d*x)+b*EXP(-e*x),a,1);
+(%o1)	EXP(-d*x)-EXP(-c*x)
+(%i2)	diff((1-a-b)*EXP(-c*x)+a*EXP(-d*x)+b*EXP(-e*x),b,1);
+(%o2)	EXP(-e*x)-EXP(-c*x)
+(%i3)	diff((1-a-b)*EXP(-c*x)+a*EXP(-d*x)+b*EXP(-e*x),c,1);
+(%o3)	(-b-a+1)*(-x*EXP(-c*x))   		// ('diff(EXP(-c*x),c,1)) = -x*EXP(-c*x)
+(%i4)	diff((1-a-b)*EXP(-c*x)+a*EXP(-d*x)+b*EXP(-e*x),d,1);
+(%o4)	a*(-x*EXP(-d*x))       	 	// ('diff(EXP(-d*x),d,1)) = -x*EXP(-d*x)
+(%i5)	diff((1-a-b)*EXP(-c*x)+a*EXP(-d*x)+b*EXP(-e*x),e,1);
+(%o5)	b*(-x*EXP(-e*x))          		// ('diff(EXP(-e*x),e,1)) = -x*EXP(-e*x)
+
+
+(-b-a+1)*('diff(EXP(-c*x),c,1))
