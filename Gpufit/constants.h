@@ -22,7 +22,8 @@ enum ModelID {
     BIEXP = 200,
     BIEXP_RED = 201,
     MONOEXP = 100,
-    MONOEXP_RED = 101
+    MONOEXP_RED = 101,
+    MONOEXP_T1 = 102
 };
 
 // estimator ID
