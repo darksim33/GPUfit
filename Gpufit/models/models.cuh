@@ -21,6 +21,7 @@
 #include "biexpred.cuh"
 #include "monoexp.cuh"
 #include "monoexpred.cuh"
+#include "monoexp_t1.cuh"
 
 __device__ void calculate_model(
     ModelID const model_id,
@@ -93,7 +94,10 @@ __device__ void calculate_model(
         break;
     case MONOEXP_RED:
         calculate_monoexp_red(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
-        break;  
+        break;
+    case MONOEXP_T1:
+        calculate_monoexp_t1(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
+        break;
     default:
         assert(0); // unknown model ID
     }
@@ -122,6 +126,7 @@ void configure_model(ModelID const model_id, int & n_parameters, int & n_dimensi
     case BIEXP_RED:             n_parameters = 3; n_dimensions = 1; break;
     case MONOEXP:               n_parameters = 2; n_dimensions = 1; break;
     case MONOEXP_RED:           n_parameters = 1; n_dimensions = 1; break;
+    case MONOEXP_T1:            n_parameters = 3; n_dimensions = 1; break;
     default: throw std::runtime_error("unknown model ID");
     }
 }
