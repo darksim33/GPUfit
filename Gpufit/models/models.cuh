@@ -24,6 +24,7 @@
 #include "monoexp.cuh"
 #include "monoexp_red.cuh"
 #include "monoexp_t1.cuh"
+#include "monoexp_t1_steam.cuh"
 
 __device__ void calculate_model(
     ModelID const model_id,
@@ -105,6 +106,9 @@ __device__ void calculate_model(
         break;
     case MONOEXP_T1:
         calculate_monoexp_t1(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
+        break;
+    case MONOEXP_T1_STEAM:
+        calculate_monoexp_t1_steam(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
         break;
     default:
         assert(0); // unknown model ID
