@@ -1,5 +1,5 @@
-#ifndef GPUFIT_TRIEXPRED_CUH_INCLUDED
-#define GPUFIT_TRIEXPRED_CUH_INCLUDED
+#ifndef GPUFIT_TRIEXP_RED_CUH_INCLUDED
+#define GPUFIT_TRIEXP_RED_CUH_INCLUDED
 
 /* Description of the calculate_triexp_red function
 * ===================================================
