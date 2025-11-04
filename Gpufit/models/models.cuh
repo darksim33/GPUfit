@@ -16,11 +16,13 @@
 #include "spline_3d_multichannel.cuh"
 #include "spline_3d_phase_multichannel.cuh"
 #include "triexp.cuh"
-#include "triexpred.cuh"
+#include "triexp_red.cuh"
+#include "triexp_s0.cuh"
 #include "biexp.cuh"
-#include "biexpred.cuh"
+#include "biexp_red.cuh"
+#include "biexp_s0.cuh"
 #include "monoexp.cuh"
-#include "monoexpred.cuh"
+#include "monoexp_red.cuh"
 #include "monoexp_t1.cuh"
 
 __device__ void calculate_model(
@@ -83,11 +85,17 @@ __device__ void calculate_model(
     case TRIEXP_RED:
         calculate_triexp_red(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
         break;
+    case TRIEXP_S0:
+        calculate_triexp_s0(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
+        break;
     case BIEXP:
         calculate_biexp(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
         break;
     case BIEXP_RED:
         calculate_biexp_red(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
+        break;
+    case BIEXP_S0:
+        calculate_biexp_s0(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
         break;
     case MONOEXP:
         calculate_monoexp(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
@@ -122,11 +130,14 @@ void configure_model(ModelID const model_id, int & n_parameters, int & n_dimensi
     case SPLINE_3D_PHASE_MULTICHANNEL:   n_parameters = 6; n_dimensions = 4; break;
     case TRIEXP:                n_parameters = 6; n_dimensions = 1; break;
     case TRIEXP_RED:            n_parameters = 5; n_dimensions = 1; break;
+    case TRIEXP_S0:             n_parameters = 6; n_dimensions = 1; break;
     case BIEXP:                 n_parameters = 4; n_dimensions = 1; break;
     case BIEXP_RED:             n_parameters = 3; n_dimensions = 1; break;
+    case BIEXP_S0:              n_parameters = 4; n_dimensions = 1; break;
     case MONOEXP:               n_parameters = 2; n_dimensions = 1; break;
     case MONOEXP_RED:           n_parameters = 1; n_dimensions = 1; break;
     case MONOEXP_T1:            n_parameters = 3; n_dimensions = 1; break;
+    case MONOEXP_T1_STEAM:      n_parameters = 3; n_dimensions = 1; break;
     default: throw std::runtime_error("unknown model ID");
     }
 }
