@@ -20,6 +20,8 @@ enum ModelID {
     TRIEXP = 300,
     TRIEXP_RED = 301,
     TRIEXP_S0 = 302,
+    TRIEXP_T1 = 303,
+    TRIEXP_T1_STEAM = 304,
     BIEXP = 200,
     BIEXP_RED = 201,
     BIEXP_S0 = 202,

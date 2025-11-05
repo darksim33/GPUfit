@@ -18,6 +18,8 @@
 #include "triexp.cuh"
 #include "triexp_red.cuh"
 #include "triexp_s0.cuh"
+#include "triexp_t1.cuh"
+#include "triexp_t1_steam.cuh"
 #include "biexp.cuh"
 #include "biexp_red.cuh"
 #include "biexp_s0.cuh"
@@ -91,6 +93,12 @@ __device__ void calculate_model(
     case TRIEXP_S0:
         calculate_triexp_s0(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
         break;
+    case TRIEXP_T1:
+        calculate_triexp_t1(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
+        break;
+    case TRIEXP_T1_STEAM:
+        calculate_triexp_t1_steam(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
+        break;
     case BIEXP:
         calculate_biexp(parameters, n_fits, n_points, value, derivative, point_index, fit_index, chunk_index, user_info, user_info_size);
         break;
@@ -143,6 +151,8 @@ void configure_model(ModelID const model_id, int & n_parameters, int & n_dimensi
     case TRIEXP:                n_parameters = 6; n_dimensions = 1; break;
     case TRIEXP_RED:            n_parameters = 5; n_dimensions = 1; break;
     case TRIEXP_S0:             n_parameters = 6; n_dimensions = 1; break;
+    case TRIEXP_T1:             n_parameters = 7; n_dimensions = 1; break;
+    case TRIEXP_T1_STEAM:       n_parameters = 7; n_dimensions = 1; break;
     case BIEXP:                 n_parameters = 4; n_dimensions = 1; break;
     case BIEXP_RED:             n_parameters = 3; n_dimensions = 1; break;
     case BIEXP_S0:              n_parameters = 4; n_dimensions = 1; break;
