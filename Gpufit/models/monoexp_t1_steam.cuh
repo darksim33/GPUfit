@@ -7,11 +7,12 @@
 * This function calculates the values of monoexponential functions
 * and their partial derivatives with respect to the model parameters.
 *
-* The monoexponential function is: y = a*exp(-b*x) * (1 - exp(-TR/c)) * (exp(-t_mix/c))
+* The monoexponential function is: y = a*exp(-b*x) * (1 - exp(-TR/c)) * (exp(-TM/c))
 * The derivatives are:
-* dy/da = exp(-b*x) * (1 - exp(-TR/c)) * (exp(-t_mix/c))
-* dy/db = a*(-x)*exp(-b*x) * (1 - exp(-TR/c)) * (exp(-t_mix/c))
-* dy/dc = a*exp(-b*x) * (1 - exp(-TR/c)) * (TR/c²) * (t_mix/c²) * (exp(-t_mix/c))
+* TR: repetition time, TM: mixing time
+* dy/da = exp(-b*x) * (1 - exp(-TR/c)) * (exp(-TM/c))
+* dy/db = a*(-x)*exp(-b*x) * (1 - exp(-TR/c)) * (exp(-TM/c))
+* dy/dc = a*exp(-b*x) * (1 - exp(-TR/c)) * (TR/c²) * (TM/c²) * (exp(-TM/c))
 *
 * This function makes use of the user information data to pass in the
 * independent variables (X values) corresponding to the data.  The X values
@@ -96,7 +97,7 @@ __device__ void calculate_monoexp_t1_steam(
 
     // Read the last entry (TR value)
     REAL const TR = user_info_float[user_info_size / sizeof(REAL) - 2];    
-    REAL const t_mix = user_info_float[user_info_size / sizeof(REAL) - 1];
+    REAL const TM = user_info_float[user_info_size / sizeof(REAL) - 1];
     
     REAL x = 0;
     if (!user_info_float)
@@ -120,7 +121,7 @@ __device__ void calculate_monoexp_t1_steam(
     /* value
     a*exp(-b*x)*(1-exp(-TR/c))
     p[0]: a   p[1]: b   p[2]: c     */
-    value[point_index] = p[0] * exp(-p[1] * x) * (1 - exp(-TR / p[2])) * (exp(-t_mix / p[2]));
+    value[point_index] = p[0] * exp(-p[1] * x) * (1 - exp(-TR / p[2])) * (exp(-TM / p[2]));
     
     /* derivatives
     dy/da = exp(-b*x)
@@ -128,9 +129,10 @@ __device__ void calculate_monoexp_t1_steam(
     dy/dc = a*exp(-b*x)*(TR/(c*c))*exp(-TR/c)
     */
     REAL* current_derivatives = derivative + point_index;
-    current_derivatives[0 * n_points] = exp(-p[1] * x) * (1 - exp(-TR / p[2])) * (exp(-t_mix / p[2]));
-    current_derivatives[1 * n_points] = p[0] * (-x) * exp(-p[1] * x) * (1 - exp(-TR / p[2])) * (exp(-t_mix / p[2]));
-    current_derivatives[2 * n_points] = p[0] * exp(-p[1] * x) * (TR / (p[2] * p[2])) * (t_mix / (p[2] * p[2])) * exp(-TR / p[2]);
+    current_derivatives[0 * n_points] = exp(-p[1] * x) * (1 - exp(-TR / p[2])) * (exp(-TM / p[2]));
+    current_derivatives[1 * n_points] = p[0] * (-x) * exp(-p[1] * x) * (1 - exp(-TR / p[2])) * (exp(-TM / p[2]));
+    // IVIM * (TM/T1 - (TM + TR)/T1 * exp(-TR/T1)) * exp(-TM/T1)
+    current_derivatives[2 * n_points] = p[0] * exp(-p[1] * x) * ((TM / (p[2] * p[2])) - ((TM + TR)/ (p[2] * p[2])) * exp(-TR/p[2])) * (exp(-TM/p[2]));
 }
 
 #endif // GPUFIT_MONOEXP_T1_STEAM_CUH_INCLUDED

@@ -1,5 +1,5 @@
-#ifndef GPUFIT_BIEXP_CUH_INCLUDED
-#define GPUFIT_BIEXP_CUH_INCLUDED
+#ifndef GPUFIT_BIEXP_T1_STEAM_CUH_INCLUDED
+#define GPUFIT_BIEXP_T1_STEAM_CUH_INCLUDED
 
 /* Description of the calculate_biexp function
 * ===================================================
