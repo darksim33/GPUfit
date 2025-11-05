@@ -23,6 +23,8 @@ enum ModelID {
     BIEXP = 200,
     BIEXP_RED = 201,
     BIEXP_S0 = 202,
+    BIEXP_T1 = 203,
+    BIEXP_T1_STEAM = 204,
     MONOEXP = 100,
     MONOEXP_RED = 101,
     MONOEXP_T1 = 102
