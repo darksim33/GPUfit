@@ -138,7 +138,10 @@ __device__ void calculate_biexp(
     current_derivatives[2 * n_points] = exp(-p[3] * x) * (1 - exp(-TR/p[4]))* (exp(-TM/p[4]));
     current_derivatives[3 * n_points] = p[2] * (-x) * exp(-p[3] * x)* (1 - exp(-TR/p[4])) * (exp(-TM/p[4]));
     // IVIM * (TM/T1 - (TM + TR)/T1 * exp(-TR/T1)) * exp(-TM/T1)
-    current_derivatives[4 * n_points] = p[0] * exp(-p[1] * x) + p[2] * exp(-p[3] * x) * ((TM / (p[4] * p[4])) - ((TM + TR)/ (p[4] * p[4])) * exp(-TR/p[4])) * (exp(-TM/p[4]));
+    current_derivatives[4 * n_points] = 
+        (p[0] * exp(-p[1] * x) + 
+        p[2] * exp(-p[3] * x)) * 
+        ((TM / (p[4] * p[4])) - ((TM + TR)/ (p[4] * p[4])) * exp(-TR/p[4])) * (exp(-TM/p[4]));
 }
 
 #endif
