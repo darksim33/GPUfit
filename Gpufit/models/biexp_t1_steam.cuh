@@ -7,13 +7,14 @@
 * This function calculates the values of biexponential functions
 * and their partial derivatives with respect to the model parameters.
 *
-* The reduced biexponential function is: y = (a*exp(-b*x)+c*exp(-d*x))*(1-exp(-TR/e)*(exp(-t_mix/e)))
+* The reduced biexponential function is: y = (a*exp(-b*x)+c*exp(-d*x))*(1-exp(-TR/e)*(exp(-TM/e)))
+* TR: repetition time, TM: mixing time
 * The derivatives are:
-* dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-* dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-* dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-* dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-* dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(t_mix/e²)*(exp(-t_mix/e))
+* dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
+* dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
+* dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
+* dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
+* dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(TM/e²)*(exp(-TM/e))
 *
 * This function makes use of the user information data to pass in the
 * independent variables (X values) corresponding to the data.  The X values
@@ -124,12 +125,12 @@ __device__ void calculate_biexp(
     
     
     /*  derivatives
-    dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-    dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-    dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-    dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-t_mix/e)
-    dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(t_mix/e²)*(exp(-t_mix/e))
-    */    
+    dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
+    dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
+    dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
+    dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
+    dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(TM/e²)*(exp(-TM/e))
+    */
 
     REAL* current_derivatives = derivative + point_index;
     current_derivatives[0 * n_points] = exp(-p[1] * x) * (1 - exp(-TR/p[4])) * (exp(-TM/p[4]));
