@@ -1,4 +1,4 @@
-#ifndef GPUFIT_BIEXPRED_S0_T1_CUH_INCLUDED
+#ifndef GPUFIT_BIEXPRED_S0_T1_STEAM_CUH_INCLUDED
 #define GPUFIT_BIEXPRED_S0_T1_CUH_INCLUDED
 
 /* Description of the calculate_biexp_red function
