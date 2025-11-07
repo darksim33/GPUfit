@@ -117,9 +117,9 @@ __device__ void calculate_triexp_red(
     S/S0 = a*exp(-b*x)+c*exp(-d*x)+(1-a-c)*exp(-e*x)
     p[0]: a   p[1]: b     p[2]: c    p[3]: d   p[4]: e */
     value[point_index] = 
-        (1.0 - p[0] - p[1]) * exp(-p[2] * x) +
-        p[0] * exp(-p[3] * x) +
-        p[1] * exp(-p[4] * x);
+        p[0] * exp(-p[1] * x) +
+        p[2] * exp(-p[3] * x) +
+        (1 - p[0] - p[2]) * exp(-p[4] * x);
 
     /* derivatives
     dy/da = exp(-bx) - exp(-ex)
