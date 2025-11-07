@@ -115,7 +115,7 @@ __device__ void calculate_biexp(
     /* value
     a*exp(-b*x)+c*exp(-d*x)
     p[0]: a (f1)  p[1]: b (D1)    p[2]: c (f2)    p[3]: d (D2)  */
-    value[point_index] = p[0] * exp(-p[2] * x) + p[1] * exp(-p[3] * x);
+    value[point_index] = p[0] * exp(-p[1] * x) + p[2] * exp(-p[3] * x);
     
     
     /*  derivatives

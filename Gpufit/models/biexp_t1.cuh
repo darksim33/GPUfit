@@ -119,7 +119,7 @@ __device__ void calculate_biexp_t1(
     /* value
     a*exp(-b*x)+c*exp(-d*x)*(1-exp(-TR/e)
     p[0]: a (f1)  p[1]: b (D1)    p[2]: c (f2)    p[3]: d (D2)   p[4]: e (T1)*/
-    value[point_index] = (p[0] * exp(-p[2] * x) + p[1] * exp(-p[3] * x)) * (1 - exp(-TR/p[4]));
+    value[point_index] = (p[0] * exp(-p[1] * x) + p[2] * exp(-p[3] * x)) * (1 - exp(-TR/p[4]));
     
     
     /*  derivatives
