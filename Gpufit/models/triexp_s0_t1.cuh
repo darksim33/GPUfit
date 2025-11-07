@@ -122,10 +122,9 @@ __device__ void calculate_triexp_s0_t1(
     S/S0 = a*exp(-b*x)+c*exp(-d*x)+(1-a-c)*exp(-e*x)
     p[0]: a   p[1]: b     p[2]: c    p[3]: d   p[4]: e   p[5]: f   p[6]: g */
     value[point_index] = 
-        ((1.0 - p[0] - p[1]) * exp(-p[2] * x) +
-        p[0] * exp(-p[3] * x) +
-        p[1] * exp(-p[4] * x)) * 
-        p[5] * 
+        (p[0] * exp(-p[1] * x) +
+        p[2] * exp(-p[3] * x) +
+        (1.0 - p[0] - p[2]) * exp(-p[4] * x)) * p[5] * 
         (1 - exp(-TR/p[6]));
 
     /* derivatives
