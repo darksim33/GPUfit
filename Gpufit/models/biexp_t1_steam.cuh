@@ -80,7 +80,7 @@
 *
 */
 
-__device__ void calculate_biexp(
+__device__ void calculate_biexp_t1_steam(
     REAL const* parameters,
     int const n_fits,
     int const n_points,

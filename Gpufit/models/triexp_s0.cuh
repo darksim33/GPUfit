@@ -80,7 +80,7 @@
 *
 */
 
-__device__ void calculate_triexp_red(
+__device__ void calculate_triexp_s0(
     REAL const* parameters,
     int const n_fits,
     int const n_points,

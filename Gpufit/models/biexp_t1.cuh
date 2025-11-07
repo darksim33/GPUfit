@@ -1,5 +1,5 @@
-#ifndef GPUFIT_BIEXP_CUH_INCLUDED
-#define GPUFIT_BIEXP_CUH_INCLUDED
+#ifndef GPUFIT_BIEXP_T1_CUH_INCLUDED
+#define GPUFIT_BIEXP_T1_CUH_INCLUDED
 
 /* Description of the calculate_biexp function
 * ===================================================
@@ -79,7 +79,7 @@
 *
 */
 
-__device__ void calculate_biexp(
+__device__ void calculate_biexp_t1(
     REAL const* parameters,
     int const n_fits,
     int const n_points,
