@@ -14,7 +14,7 @@
 * dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
 * dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
 * dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
-* dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(TM/e²)*(exp(-TM/e))
+* dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TM/e^2 - (TM + TR)/e^2 * exp(-TR/e)) * exp(-TM/e)
 *
 * This function makes use of the user information data to pass in the
 * independent variables (X values) corresponding to the data.  The X values

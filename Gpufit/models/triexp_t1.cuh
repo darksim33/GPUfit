@@ -10,12 +10,12 @@
 * The triexponential function is: y = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx))*(1 - exp(-TR/g)) 
 * TR: repetition time
 * The derivatives are:
-* dy/da = exp(-bx)
-* dy/db = -a*x*exp(-b*x)         // a*(d/(d*b)exp(-bx))
-* dy/dc = exp(-dx)
-* dy/dd = -c*x*exp(-d*x)         // c*(d/(d*d)exp(-dx))
-* dy/de = exp(-fx)
-* dy/df = -e*x*exp(-f*x)         // e*(d/(d*f)exp(-fx))
+* dy/da = exp(-bx)*(1 - exp(-TR/g)) 
+* dy/db = -a*x*exp(-b*x)*(1 - exp(-TR/g))
+* dy/dc = exp(-dx)*(1 - exp(-TR/g)) 
+* dy/dd = -c*x*exp(-d*x)*(1 - exp(-TR/g))
+* dy/de = exp(-fx)*(1 - exp(-TR/g)) 
+* dy/df = -e*x*exp(-f*x)*(1 - exp(-TR/g)) 
 * dy/dg = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx))*(-TR/g²)*exp(-TR/g)
 *
 * This function makes use of the user information data to pass in the
@@ -143,12 +143,12 @@ __device__ void calculate_triexp_t1(
     */
 
     REAL* current_derivatives = derivative + point_index;
-    current_derivatives[0 * n_points] = exp(-p[1] * x);
-    current_derivatives[1 * n_points] = p[0] * x * exp(-p[1] * x);
-    current_derivatives[2 * n_points] = exp(-p[3] * x);
-    current_derivatives[3 * n_points] = p[2] * x * exp(-p[3] * x);
-    current_derivatives[4 * n_points] = exp(-p[5] * x);
-    current_derivatives[5 * n_points] = p[4] * x * exp(-p[5] * x);
+    current_derivatives[0 * n_points] = exp(-p[1] * x)*(1 - exp(-TR / p[6]));
+    current_derivatives[1 * n_points] = p[0] * x * exp(-p[1] * x)*(1 - exp(-TR / p[6]));
+    current_derivatives[2 * n_points] = exp(-p[3] * x)*(1 - exp(-TR / p[6]));
+    current_derivatives[3 * n_points] = p[2] * x * exp(-p[3] * x)*(1 - exp(-TR / p[6]));
+    current_derivatives[4 * n_points] = exp(-p[5] * x)*(1 - exp(-TR / p[6]));
+    current_derivatives[5 * n_points] = p[4] * x * exp(-p[5] * x)*(1 - exp(-TR / p[6]));
     // IVIM * (-TR/(g*g))*exp(-TR/g)
     current_derivatives[6 * n_points] =
         (

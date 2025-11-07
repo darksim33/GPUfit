@@ -10,13 +10,13 @@
 * The triexponential function is: y = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx))*(1 - exp(-TR/g)) * (exp(-TM/g))
 * TR: repetition time, TM: mixing time
 * The derivatives are:
-* dy/da = exp(-bx)
-* dy/db = -a*x*exp(-b*x)         // a*(d/(d*b)exp(-bx))
-* dy/dc = exp(-dx)
-* dy/dd = -c*x*exp(-d*x)         // c*(d/(d*d)exp(-dx))
-* dy/de = exp(-fx)
-* dy/df = -e*x*exp(-f*x)         // e*(d/(d*f)exp(-fx))
-* dy/dg = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx)) * (1 - exp(-TR/g)) * (TR/g²) * (TM/g²) * (exp(-TM/g))
+* dy/da = exp(-bx)*(1 - exp(-TR/g)) * (exp(-TM/g))
+* dy/db = -a*x*exp(-b*x)*(1 - exp(-TR/g)) * (exp(-TM/g))
+* dy/dc = exp(-dx)*(1 - exp(-TR/g)) * (exp(-TM/g))
+* dy/dd = -c*x*exp(-d*x)*(1 - exp(-TR/g)) * (exp(-TM/g))
+* dy/de = exp(-fx)*(1 - exp(-TR/g)) * (exp(-TM/g))
+* dy/df = -e*x*exp(-f*x)*(1 - exp(-TR/g)) * (exp(-TM/g))
+* dy/dg = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx)) *(TM/g² - (TM + TR)/g² * exp(-TR/g)) * exp(-TM/g)
 *
 * This function makes use of the user information data to pass in the
 * independent variables (X values) corresponding to the data.  The X values
@@ -55,6 +55,7 @@
 * parameters: An input vector of model parameters.
 *             p[0]: a   p[1]: b     p[2]: c
 *             p[3]: d   p[4]: e     p[5]: f
+*             p[6]: g
 *
 * n_fits: The number of fits.
 *
@@ -130,25 +131,25 @@ __device__ void calculate_triexp_t1_steam(
         (p[0] * exp(-p[1] * x) +
         p[2] * exp(-p[3] * x) +
         p[4] * exp(-p[5] * x)) * 
-        (1 - exp(-TR / p[6]));
+        (1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
 
     /* derivatives
-    dy/da = exp(-bx)
-    dy/db = -a*x*exp(-b*x)         // a*(d/(d*b)exp(-bx))
-    dy/dc = exp(-dx)
-    dy/dd = -c*x*exp(-d*x)         // c*(d/(d*d)exp(-dx))
-    dy/de = exp(-fx)
-    dy/df = -e*x*exp(-f*x)         // e*(d/(d*f)exp(-fx))   
-    dy/dg = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx)) * (1 - exp(-TR/g)) * (TR/g²) * (TM/g²) * (exp(-TM/g))
+    dy/da = exp(-bx)*(1 - exp(-TR/g)) * (exp(-TM/g))
+    dy/db = -a*x*exp(-b*x)*(1 - exp(-TR/g)) * (exp(-TM/g))
+    dy/dc = exp(-dx)*(1 - exp(-TR/g)) * (exp(-TM/g))
+    dy/dd = -c*x*exp(-d*x)*(1 - exp(-TR/g)) * (exp(-TM/g))
+    dy/de = exp(-fx)*(1 - exp(-TR/g)) * (exp(-TM/g))
+    dy/df = -e*x*exp(-f*x)*(1 - exp(-TR/g)) * (exp(-TM/g))
+    dy/dg = (a*exp(-bx) + c*exp(-dx) + e*exp(-fx)) *(TM/g² - (TM + TR)/g² * exp(-TR/g)) * exp(-TM/g)
     */
 
     REAL* current_derivatives = derivative + point_index;
-    current_derivatives[0 * n_points] = exp(-p[1] * x);
-    current_derivatives[1 * n_points] = p[0] * x * exp(-p[1] * x);
-    current_derivatives[2 * n_points] = exp(-p[3] * x);
-    current_derivatives[3 * n_points] = p[2] * x * exp(-p[3] * x);
-    current_derivatives[4 * n_points] = exp(-p[5] * x);
-    current_derivatives[5 * n_points] = p[4] * x * exp(-p[5] * x);
+    current_derivatives[0 * n_points] = exp(-p[1] * x)*(1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
+    current_derivatives[1 * n_points] = p[0] * x * exp(-p[1] * x)*(1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
+    current_derivatives[2 * n_points] = exp(-p[3] * x)*(1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
+    current_derivatives[3 * n_points] = p[2] * x * exp(-p[3] * x)*(1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
+    current_derivatives[4 * n_points] = exp(-p[5] * x)*(1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
+    current_derivatives[5 * n_points] = p[4] * x * exp(-p[5] * x)*(1 - exp(-TR / p[6]))*(exp(-TM/p[6]));
     // IVIM * (TM/T1 - (TM + TR)/T1 * exp(-TR/T1)) * exp(-TM/T1)
     current_derivatives[6 * n_points] =
         (
