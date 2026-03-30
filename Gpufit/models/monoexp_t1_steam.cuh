@@ -90,12 +90,12 @@ __device__ void calculate_monoexp_t1_steam(
     std::size_t const user_info_size)
 {
     // indices
-    // reduce user_info_size by one since the last entry is reserved for TR
+    // reduce user_info_size by two since the last two entries are reserved for TR and TM
     std::size_t const reduced_user_info_size = user_info_size - 2 * sizeof(REAL);
 
     REAL *user_info_float = (REAL *)user_info;
 
-    // Read the last entry (TR value)
+    // Read the last two entries (TR and TM values)
     REAL const TR = user_info_float[user_info_size / sizeof(REAL) - 2];
     REAL const TM = user_info_float[user_info_size / sizeof(REAL) - 1];
 

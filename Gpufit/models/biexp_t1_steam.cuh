@@ -130,7 +130,7 @@ __device__ void calculate_biexp_t1_steam(
     dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
     dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
     dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
-    dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(TM/e²)*(exp(-TM/e))
+    dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TM/e² - (TM+TR)/e² * exp(-TR/e)) * exp(-TM/e)
     */
 
     REAL *current_derivatives = derivative + point_index;
