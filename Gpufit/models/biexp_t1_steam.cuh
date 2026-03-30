@@ -2,113 +2,115 @@
 #define GPUFIT_BIEXP_T1_STEAM_CUH_INCLUDED
 
 /* Description of the calculate_biexp function
-* ===================================================
-*
-* This function calculates the values of biexponential functions
-* and their partial derivatives with respect to the model parameters.
-*
-* The reduced biexponential function is: y = (a*exp(-b*x)+c*exp(-d*x))*(1-exp(-TR/e)*(exp(-TM/e)))
-* TR: repetition time, TM: mixing time
-* The derivatives are:
-* dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
-* dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
-* dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
-* dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
-* dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TM/e^2 - (TM + TR)/e^2 * exp(-TR/e)) * exp(-TM/e)
-*
-* This function makes use of the user information data to pass in the
-* independent variables (X values) corresponding to the data.  The X values
-* must be of type REAL.
-*
-* Note that if no user information is provided, the (X) coordinate of the
-* first data value is assumed to be (0.0).  In this case, for a fit size of
-* M data points, the (X) coordinates of the data are simply the corresponding
-* array index values of the data array, starting from zero.
-*
-* There are three possibilities regarding the X values:
-*
-*   No X values provided:
-*
-*       If no user information is provided, the (X) coordinate of the
-*       first data value is assumed to be (0.0).  In this case, for a
-*       fit size of M data points, the (X) coordinates of the data are
-*       simply the corresponding array index values of the data array,
-*       starting from zero.
-*
-*   X values provided for one fit:
-*
-*       If the user_info array contains the X values for one fit, then
-*       the same X values will be used for all fits.  In this case, the
-*       size of the user_info array (in bytes) must equal
-*       sizeof(REAL) * n_points.
-*
-*   Unique X values provided for all fits:
-*
-*       In this case, the user_info array must contain X values for each
-*       fit in the dataset.  In this case, the size of the user_info array
-*       (in bytes) must equal sizeof(REAL) * n_points * nfits.
-*
-* Parameters:
-*
-* parameters: An input vector of model parameters.
-*             p[0]: a   p[1]: b     p[2]: c
-*             p[3]: d   p[4]: e
-*
-* n_fits: The number of fits.
-*
-* n_points: The number of data points per fit.
-*
-* value: An output vector of model function values.
-*
-* derivative: An output vector of model function partial derivatives.
-*
-* point_index: The data point index.
-*
-* fit_index: The fit index.
-*
-* chunk_index: The chunk index. Used for indexing of user_info.
-*
-* user_info: An input vector containing user information.
-*
-* user_info_size: The size of user_info in bytes.
-*
-* Calling the calculate_biexp function
-* =======================================
-*
-* This __device__ function can be only called from a __global__ function or an other
-* __device__ function.
-*
-*/
+ * ===================================================
+ *
+ * This function calculates the values of biexponential functions
+ * and their partial derivatives with respect to the model parameters.
+ *
+ * The reduced biexponential function is: y = (a*exp(-b*x)+c*exp(-d*x))*(1-exp(-TR/e)*(exp(-TM/e)))
+ * TR: repetition time, TM: mixing time
+ * The derivatives are:
+ * dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
+ * dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
+ * dy/dc = exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
+ * dy/dd = c*(-x)*exp(-d*x)*(1-exp(-TR/e))*(exp(-TM/e))
+ * dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TM/e^2 - (TM + TR)/e^2 * exp(-TR/e)) * exp(-TM/e)
+ *
+ * This function makes use of the user information data to pass in the
+ * independent variables (X values) corresponding to the data.  The X values
+ * must be of type REAL.
+ *
+ * Note that if no user information is provided, the (X) coordinate of the
+ * first data value is assumed to be (0.0).  In this case, for a fit size of
+ * M data points, the (X) coordinates of the data are simply the corresponding
+ * array index values of the data array, starting from zero.
+ *
+ * There are three possibilities regarding the X values:
+ *
+ *   No X values provided:
+ *
+ *       If no user information is provided, the (X) coordinate of the
+ *       first data value is assumed to be (0.0).  In this case, for a
+ *       fit size of M data points, the (X) coordinates of the data are
+ *       simply the corresponding array index values of the data array,
+ *       starting from zero.
+ *
+ *   X values provided for one fit:
+ *
+ *       If the user_info array contains the X values for one fit, then
+ *       the same X values will be used for all fits.  In this case, the
+ *       size of the user_info array (in bytes) must equal
+ *       sizeof(REAL) * n_points.
+ *
+ *   Unique X values provided for all fits:
+ *
+ *       In this case, the user_info array must contain X values for each
+ *       fit in the dataset.  In this case, the size of the user_info array
+ *       (in bytes) must equal sizeof(REAL) * n_points * nfits.
+ *
+ * Parameters:
+ *
+ * parameters: An input vector of model parameters.
+ *             p[0]: a   p[1]: b     p[2]: c
+ *             p[3]: d   p[4]: e
+ *
+ * n_fits: The number of fits.
+ *
+ * n_points: The number of data points per fit.
+ *
+ * value: An output vector of model function values.
+ *
+ * derivative: An output vector of model function partial derivatives.
+ *
+ * point_index: The data point index.
+ *
+ * fit_index: The fit index.
+ *
+ * chunk_index: The chunk index. Used for indexing of user_info.
+ *
+ * user_info: An input vector containing user information.
+ *
+ * user_info_size: The size of user_info in bytes.
+ *
+ * Calling the calculate_biexp function
+ * =======================================
+ *
+ * This __device__ function can be only called from a __global__ function or an other
+ * __device__ function.
+ *
+ */
 
 __device__ void calculate_biexp_t1_steam(
-    REAL const* parameters,
+    REAL const *parameters,
     int const n_fits,
     int const n_points,
-    REAL* value,
-    REAL* derivative,
+    REAL *value,
+    REAL *derivative,
     int const point_index,
     int const fit_index,
     int const chunk_index,
-    char* user_info,
+    char *user_info,
     std::size_t const user_info_size)
 {
     // indices
 
-    REAL* user_info_float = (REAL*)user_info;
+    REAL *user_info_float = (REAL *)user_info;
     // Read the last two entries (TR and TM values)
-    REAL const TR = user_info_float[user_info_size / sizeof(REAL) - 2];    
+    REAL const TR = user_info_float[user_info_size / sizeof(REAL) - 2];
     REAL const TM = user_info_float[user_info_size / sizeof(REAL) - 1];
+    // reduce user_info_size by two since the last two entries are reserved for TR and TM
+    std::size_t const reduced_user_info_size = user_info_size - 2 * sizeof(REAL);
 
     REAL x = 0;
     if (!user_info_float)
     {
         x = point_index;
     }
-    else if (user_info_size / sizeof(REAL) == n_points)
+    else if (reduced_user_info_size / sizeof(REAL) == n_points)
     {
         x = user_info_float[point_index];
     }
-    else if (user_info_size / sizeof(REAL) > n_points)
+    else if (reduced_user_info_size / sizeof(REAL) > n_points)
     {
         int const chunk_begin = chunk_index * n_fits * n_points;
         int const fit_begin = fit_index * n_points;
@@ -116,14 +118,13 @@ __device__ void calculate_biexp_t1_steam(
     }
 
     // parameters
-    REAL const* p = parameters;
+    REAL const *p = parameters;
 
     /* value
     a*exp(-b*x)+c*exp(-d*x)*(1-exp(-TR/e)
     p[0]: a (f1)  p[1]: b (D1)    p[2]: c (f2)    p[3]: d (D2)   p[4]: e (T1)*/
-    value[point_index] = (p[0] * exp(-p[1] * x) + p[2] * exp(-p[3] * x)) * (1 - exp(-TR/p[4])) * (exp(-TM/p[4]));
-    
-    
+    value[point_index] = (p[0] * exp(-p[1] * x) + p[2] * exp(-p[3] * x)) * (1 - exp(-TR / p[4])) * (exp(-TM / p[4]));
+
     /*  derivatives
     dy/da = exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
     dy/db = a*(-x)*exp(-b*x)*(1-exp(-TR/e))*(exp(-TM/e))
@@ -132,16 +133,16 @@ __device__ void calculate_biexp_t1_steam(
     dy/de = (a*exp(-b*x)+c*exp(-d*x))*(TR/e²)*(TM/e²)*(exp(-TM/e))
     */
 
-    REAL* current_derivatives = derivative + point_index;
-    current_derivatives[0 * n_points] = exp(-p[1] * x) * (1 - exp(-TR/p[4])) * (exp(-TM/p[4]));
-    current_derivatives[1 * n_points] = p[0] * (-x) * exp(-p[1] * x) * (1 - exp(-TR/p[4])) * (exp(-TM/p[4]));
-    current_derivatives[2 * n_points] = exp(-p[3] * x) * (1 - exp(-TR/p[4]))* (exp(-TM/p[4]));
-    current_derivatives[3 * n_points] = p[2] * (-x) * exp(-p[3] * x)* (1 - exp(-TR/p[4])) * (exp(-TM/p[4]));
+    REAL *current_derivatives = derivative + point_index;
+    current_derivatives[0 * n_points] = exp(-p[1] * x) * (1 - exp(-TR / p[4])) * (exp(-TM / p[4]));
+    current_derivatives[1 * n_points] = p[0] * (-x) * exp(-p[1] * x) * (1 - exp(-TR / p[4])) * (exp(-TM / p[4]));
+    current_derivatives[2 * n_points] = exp(-p[3] * x) * (1 - exp(-TR / p[4])) * (exp(-TM / p[4]));
+    current_derivatives[3 * n_points] = p[2] * (-x) * exp(-p[3] * x) * (1 - exp(-TR / p[4])) * (exp(-TM / p[4]));
     // IVIM * (TM/T1 - (TM + TR)/T1 * exp(-TR/T1)) * exp(-TM/T1)
-    current_derivatives[4 * n_points] = 
-        (p[0] * exp(-p[1] * x) + 
-        p[2] * exp(-p[3] * x)) * 
-        ((TM / (p[4] * p[4])) - ((TM + TR)/ (p[4] * p[4])) * exp(-TR/p[4])) * (exp(-TM/p[4]));
+    current_derivatives[4 * n_points] =
+        (p[0] * exp(-p[1] * x) +
+         p[2] * exp(-p[3] * x)) *
+        ((TM / (p[4] * p[4])) - ((TM + TR) / (p[4] * p[4])) * exp(-TR / p[4])) * (exp(-TM / p[4]));
 }
 
 #endif
